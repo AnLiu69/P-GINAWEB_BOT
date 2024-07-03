@@ -1,0 +1,83 @@
+---
+import "../styles/chatbot.css";
+---
+
+<div class="all">
+  <div class="chat-box dont-show">
+    <div class="chat-box-header">
+      <h3>Some Chat Room<br /><small>ÉbolaBOT</small></h3>
+    </div>
+    <div id="chat_box_body" class="chat-box-body">
+      <div id="chat_messages"></div>
+    </div>
+    <div id="typing">
+      <div><span></span> <span></span> <span></span> <span class="n">Someone</span> is typing...</div>
+    </div>
+    <div class="chat-box-footer">
+      <textarea id="chat_input" placeholder="Ingrese su mensaje aquí..."></textarea>
+      <button id="send">
+        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+          <path fill="#006ae3" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <button class="button-toggle" data-button-close>ÉbolaBOT</button>
+</div>
+
+<script>
+  // a functions the toogle the visibility of the chat-box element
+  localStorage.setItem("chat", "0");
+
+  function toggleChatBox() {
+    let chatBox = document.querySelector(".chat-box");
+    chatBox.classList.toggle("dont-show");
+  }
+
+  let buttonClose = document.querySelector("[data-button-close]").addEventListener("click", toggleChatBox);
+
+  // functions that handle the chat-box messages
+
+  function sendMessage() {
+    let chatInput = document.querySelector("#chat_input") as HTMLInputElement;
+    let chatMessages = document.querySelector("#chat_messages") as HTMLDivElement;
+
+    if (chatInput.value.length > 0) {
+      let message = document.createElement("div");
+      message.classList.add("message", "my-message");
+      message.innerHTML = chatInput.value;
+      chatMessages.appendChild(message);
+      chatInput.value = "";
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    receiveMessage();
+  }
+
+  function receiveMessage() {
+    let chatMessages = document.querySelector("#chat_messages");
+    let typing = document.querySelector("#typing");
+
+    let answerNumber = localStorage.getItem("chat");
+    
+    setTimeout(function () {
+      let messages = [
+        "Hola, soy tu asistente virtual ÉbolaBOT, estoy aquí para darte información puntual sobre este trabajo, para conocer esta información enviame un mensaje",
+        "Este trabajo trata sobre el análisis del caso de estudio sobre la Epidemia del Ébola en África Occidental (2014 - 2016)",
+        "Cumpliremos con las fases para construir un modelo, identificar los arquetipos sistémicos presentes, además saber cuales son los modelos mentales y construir el diagrama causal y de Forrester correspondiente; por último añadir las ecuaciones y analizar los resultados obtenidos de la simulación utilizando herramientas estadísticas.",
+        "Con respecto a las personas que forman parte de este proyecto son: Rodrigo Melecio Flores Mayta , Hubert Jared Jimenez Quispe, Brandon Jame Isla Cconislla y Anibal Ronald Muñoz Cosme",
+        "Esta es la información que puedo brindarte sobre este trabajo, me despido y que tengas un buen día"
+      ];
+
+      typing.classList.remove("active");
+      let message = document.createElement("div");
+      message.classList.add("message", "other-message");
+      message.innerHTML = messages[answerNumber];
+      chatMessages.appendChild(message);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 2000);
+
+    localStorage.setItem("chat", ((parseInt(answerNumber) + 1) % 5).toString());
+  }
+
+  let sendButton = document.querySelector("#send").addEventListener("click", sendMessage);
+</script>
